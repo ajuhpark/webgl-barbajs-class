@@ -7,7 +7,10 @@ varying vec2 vSize;
 varying vec2 vUv;
 
 void main() {
+    float PI = 3.1415926;
     vUv = uv;
+    float sine = sin(PI*uProgress);
+    float waves = sine*0.1*sin(5.*length(uv) + 5.*uProgress);
     vec4 defaultState = modelMatrix * vec4(position, 1.0);
     vec4 fullScreenState = vec4(position, 1.0);
     fullScreenState.x *=uResolution.x/uQuadSize.x;
@@ -22,7 +25,7 @@ void main() {
     );
 
 
-    vec4 finalState = mix(defaultState,fullScreenState,cornersProgress);
+    vec4 finalState = mix(defaultState,fullScreenState,uProgress + waves);
 
     vec2 size = mix(uQuadSize, uResolution, uProgress);
 

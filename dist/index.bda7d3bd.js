@@ -685,14 +685,14 @@ class Sketch {
         this.mesh = new _three.Mesh(this.geometry, this.material);
         this.scene.add(this.mesh);
         this.mesh.position.x = 300;
-        this.mesh.rotation.z = .5;
+        // this.mesh.rotation.z = .5
         this.mesh.scale.set(2., 1, 1);
     }
     render() {
         this.time += 0.05;
         this.material.uniforms.time.value = this.time;
-        // this.material.uniforms.uProgress.value = this.settings.progress;
-        this.tl.progress(this.settings.progress);
+        this.material.uniforms.uProgress.value = this.settings.progress;
+        // this.tl.progress(this.settings.progress)
         this.mesh.rotation.x = this.time / 2000;
         this.mesh.rotation.y = this.time / 1000;
         this.renderer.render(this.scene, this.camera);
@@ -32399,7 +32399,7 @@ class OrbitControls extends (0, _three.EventDispatcher) {
 module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float uProgress;\nuniform vec2 uTextureSize;\nuniform sampler2D uTexture;\nvarying vec2 vUv;\n\nvarying vec2 vSize;\n\nvec2 getUV(vec2 uv, vec2 textureSize, vec2 quadSize){\n    vec2 tempUV = uv - vec2(0.5);\n\n    float quadAspect = quadSize.x/quadSize.y;\n    float textureAspect = textureSize.x/textureSize.y;\n\n    if(quadAspect<textureAspect){\n        tempUV = tempUV*vec2(1.,1.);\n        // tempUV = tempUV*vec2(quadAspect/textureAspect,1.);\n\n    } else {\n        tempUV = tempUV*vec2(1.,1.);\n        // tempUV = tempUV*vec2(1.,textureAspect/quadAspect);\n\n    }\n    \n    tempUV += vec2(0.5);\n    return tempUV;\n}\n\nvoid main(){\n    vec2 correctUV = getUV(vUv,uTextureSize,vSize);\n    vec4 image = texture(uTexture,correctUV);\n    gl_FragColor = vec4( vUv,0.,1.);\n    gl_FragColor = image;\n}";
 
 },{}],"eLTML":[function(require,module,exports) {
-module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float uProgress;\nuniform vec2 uResolution;\nuniform vec2 uQuadSize;\nuniform vec4 uCorners;\nvarying vec2 vSize;\nvarying vec2 vUv;\n\nvoid main() {\n    vUv = uv;\n    vec4 defaultState = modelMatrix * vec4(position, 1.0);\n    vec4 fullScreenState = vec4(position, 1.0);\n    fullScreenState.x *=uResolution.x/uQuadSize.x;\n    fullScreenState.y *=uResolution.y/uQuadSize.y;\n\n    // float cornersProgress = mix(uCorners.x,uCorners.y,uv.x);\n\n    float cornersProgress = mix(\n        mix(uCorners.x,uCorners.y,uv.x),\n        mix(uCorners.z,uCorners.w,uv.x),\n        uv.y\n    );\n\n    vec4 finalState = mix(defaultState,fullScreenState,cornersProgress);\n\n    vec2 size = mix(uQuadSize, uResolution, uProgress);\n\n    gl_Position = projectionMatrix * viewMatrix * finalState;\n    \n}\n";
+module.exports = "#define GLSLIFY 1\nuniform float time;\nuniform float uProgress;\nuniform vec2 uResolution;\nuniform vec2 uQuadSize;\nuniform vec4 uCorners;\nvarying vec2 vSize;\nvarying vec2 vUv;\n\nvoid main() {\n    float PI = 3.1415926;\n    vUv = uv;\n    float sine = sin(PI*uProgress);\n    float waves = sine*0.1*sin(5.*length(uv) + 5.*uProgress);\n    vec4 defaultState = modelMatrix * vec4(position, 1.0);\n    vec4 fullScreenState = vec4(position, 1.0);\n    fullScreenState.x *=uResolution.x/uQuadSize.x;\n    fullScreenState.y *=uResolution.y/uQuadSize.y;\n\n    // float cornersProgress = mix(uCorners.x,uCorners.y,uv.x);\n\n    float cornersProgress = mix(\n        mix(uCorners.x,uCorners.y,uv.x),\n        mix(uCorners.z,uCorners.w,uv.x),\n        uv.y\n    );\n\n    vec4 finalState = mix(defaultState,fullScreenState,uProgress + waves);\n\n    vec2 size = mix(uQuadSize, uResolution, uProgress);\n\n    gl_Position = projectionMatrix * viewMatrix * finalState;\n    \n}\n";
 
 },{}],"XXCEG":[function(require,module,exports) {
 module.exports = require("990aea3133a098a0").getBundleURL("l7mk0") + "texture.6f82b4e5.jpg" + "?" + Date.now();
